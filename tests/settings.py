@@ -25,6 +25,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
 AUTH_USER_MODEL = 'speedtests.User'
 
 ROOT_URLCONF = 'tests.urls'
