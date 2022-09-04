@@ -1,2 +1,2 @@
 # bim-server
-Server for bench.im
+Server backend for bench.im
