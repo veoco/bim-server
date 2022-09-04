@@ -21,7 +21,7 @@ jobs:
       run: |
         sudo apt-get install -y librrd-dev libpython3-dev
         python -m pip install --upgrade pip
-        pip install django rrdtool
+        pip install django rrdtool paka.cmark
     - name: Run Tests
       run: |
         cd tests
