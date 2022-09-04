@@ -25,4 +25,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+AUTH_USER_MODEL = 'speedtests.User'
+
 ROOT_URLCONF = 'tests.urls'
