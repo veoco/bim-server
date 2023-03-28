@@ -25,7 +25,7 @@ class MachineItem(Schema):
 
     created: datetime
     modified: datetime
-    status: str
+    status: int
 
     @staticmethod
     def resolve_ip(obj):
@@ -72,7 +72,7 @@ class TaskWithMachineAndServerItem(Schema):
 
     created: datetime
     modified: datetime
-    status: str
+    status: int
 
     download: float
     download_status: str

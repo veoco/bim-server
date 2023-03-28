@@ -9,16 +9,16 @@ api = NinjaAPI()
 @api.post("/machines/", response={201: MachineItem})
 def create_machine(request, form: MachineCreate):
     token = form.token
-    
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+
+    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
     if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
+        ip = x_forwarded_for.split(",")[0]
     else:
-        ip = request.META.get('REMOTE_ADDR')
+        ip = request.META.get("REMOTE_ADDR")
 
     if Machine.objects.filter(token=token, ip=ip).exists():
         machine = Machine.objects.get(token=token, ip=ip)
-        machine.status = Machine.Status.READY
+        machine.status = 1  # 1: Online
         machine.save()
     else:
         name = form.name
@@ -40,7 +40,7 @@ def create_server(request, form: ServerCreate):
         status=Machine.Status.OFFLINE
     )[:20]
     for i, machine in enumerate(online_machines):
-        status = Task.Status.BLOCK if i != 0 else Task.Status.READY
+        status = 1 if i != 0 else 2 # 1: Block, 2: Ready
         Task.objects.create(
             server=server,
             machine=machine,
@@ -57,7 +57,11 @@ def list_servers(request, token: str):
 
 @api.post("/tasks/{pk}", response=Message)
 def finish_task(request, pk: int, token: str, form: TaskFinish):
-    if not Task.objects.select_related("machine").filter(pk=pk, machine__token=token, status=Task.Status.READY).exists():
+    if (
+        not Task.objects.select_related("machine")
+        .filter(pk=pk, machine__token=token, status=2) # 2: Ready
+        .exists()
+    ):
         return 404, {"msg": "Not found"}
 
     task = Task.objects.get(pk=pk)
@@ -68,7 +72,7 @@ def finish_task(request, pk: int, token: str, form: TaskFinish):
     task.upload_status = form.upload_status
     task.latency = form.latency
     task.jitter = task.jitter
-    task.status = Task.Status.FINISH
+    task.status = 3  # Finish
     task.save()
 
     for t in Task.objects.filter(server=task.server, status=Task.Status.BLOCK):
@@ -84,9 +88,13 @@ def list_tasks(
     token: str,
     machine_id: int = None,
     server_id: int = None,
-    status: str = None,
+    status: int = None,
 ):
-    tasks = Task.objects.select_related("machine", "server").filter(machine__token=token).filter(server__token=token)
+    tasks = (
+        Task.objects.select_related("machine", "server")
+        .filter(machine__token=token)
+        .filter(server__token=token)
+    )
     if machine_id:
         tasks = tasks.filter(machine_id=machine_id)
     if server_id:

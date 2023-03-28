@@ -2,22 +2,13 @@ from django.db import models
 
 
 class Machine(models.Model):
-    class Status(models.TextChoices):
-        READY = "Ready", "Ready"
-        WORKING = "Working", "Working"
-        OFFLINE = "Offline", "Offline"
-
     token = models.SlugField(max_length=64, db_index=True)
     name = models.CharField(max_length=16)
     ip = models.GenericIPAddressField(db_index=True)
 
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    status = models.CharField(
-        max_length=16,
-        choices=Status.choices,
-        default=Status.READY,
-    )
+    status = models.SmallIntegerField(default=1)
 
 
 class Server(models.Model):
@@ -34,12 +25,6 @@ class Server(models.Model):
 
 
 class Task(models.Model):
-    class Status(models.TextChoices):
-        BLOCK = "Block", "Block"
-        READY = "Ready", "Ready"
-        FINISH = "Finish", "Finish"
-        TIMEOUT = "Timeout", "Timeout"
-
     machine = models.ForeignKey(
         Machine,
         on_delete=models.CASCADE,
@@ -57,11 +42,7 @@ class Task(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    status = models.CharField(
-        max_length=16,
-        choices=Status.choices,
-        default=Status.BLOCK,
-    )
+    status = models.SmallIntegerField(default=1)
 
     download = models.FloatField(default=0)
     download_status = models.CharField(max_length=16, default="")
