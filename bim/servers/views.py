@@ -9,7 +9,12 @@ api = NinjaAPI()
 @api.post("/machines/", response={201: MachineItem})
 def create_machine(request, form: MachineCreate):
     token = form.token
-    ip = request.META.get("HTTP_X_FORWARDED_FOR") or request.META.get("REMOTE_ADDR")
+    
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
 
     if Machine.objects.filter(token=token, ip=ip).exists():
         machine = Machine.objects.get(token=token, ip=ip)
