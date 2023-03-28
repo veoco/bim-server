@@ -37,10 +37,10 @@ def create_server(request, form: ServerCreate):
 
     token = form.token
     online_machines = Machine.objects.filter(token=token).exclude(
-        status=Machine.Status.OFFLINE
+        status=0  # 0: Offline
     )[:20]
     for i, machine in enumerate(online_machines):
-        status = 1 if i != 0 else 2 # 1: Block, 2: Ready
+        status = 1 if i != 0 else 2  # 1: Block, 2: Work
         Task.objects.create(
             server=server,
             machine=machine,
@@ -59,7 +59,7 @@ def list_servers(request, token: str):
 def finish_task(request, pk: int, token: str, form: TaskFinish):
     if (
         not Task.objects.select_related("machine")
-        .filter(pk=pk, machine__token=token, status=2) # 2: Ready
+        .filter(pk=pk, machine__token=token, status=2)  # 2: Work
         .exists()
     ):
         return 404, {"msg": "Not found"}
@@ -75,8 +75,8 @@ def finish_task(request, pk: int, token: str, form: TaskFinish):
     task.status = 3  # Finish
     task.save()
 
-    for t in Task.objects.filter(server=task.server, status=Task.Status.BLOCK):
-        t.status = Task.Status.WORKING
+    for t in Task.objects.filter(server=task.server, status=1): # 1: Block
+        t.status = 2 # 2: Work 
         break
 
     return 200, {"msg": "ok"}
@@ -90,6 +90,10 @@ def list_tasks(
     server_id: int = None,
     status: int = None,
 ):
+    if Machine.objects.filter(pk=machine_id).exists():
+        machine = Machine.objects.get(pk=machine_id)
+        machine.save()
+
     tasks = (
         Task.objects.select_related("machine", "server")
         .filter(machine__token=token)
