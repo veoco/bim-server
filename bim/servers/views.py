@@ -84,6 +84,7 @@ def finish_task(request, pk: int, token: str, form: TaskFinish):
 
     for t in Task.objects.filter(server=task.server, status=1):  # 1: Block
         t.status = 2  # 2: Work
+        t.save()
         break
 
     return 200, {"msg": "ok"}
