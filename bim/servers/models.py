@@ -10,6 +10,9 @@ class Machine(models.Model):
     modified = models.DateTimeField(auto_now=True)
     status = models.SmallIntegerField(default=1)
 
+    def __str__(self):
+        return self.name
+
 
 class Server(models.Model):
     token = models.SlugField(max_length=64, db_index=True)
@@ -23,6 +26,9 @@ class Server(models.Model):
     ipv6 = models.BooleanField(default=False)
     multi = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.name
+
 
 class Task(models.Model):
     machine = models.ForeignKey(
@@ -30,14 +36,14 @@ class Task(models.Model):
         on_delete=models.CASCADE,
         related_name="tasks",
         related_query_name="task",
-        db_constraint=False
+        db_constraint=False,
     )
     server = models.ForeignKey(
         Server,
         on_delete=models.CASCADE,
         related_name="tasks",
         related_query_name="task",
-        db_constraint=False
+        db_constraint=False,
     )
 
     created = models.DateTimeField(auto_now_add=True)
