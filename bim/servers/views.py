@@ -28,7 +28,7 @@ def create_machine(request, form: MachineCreate):
 
 @api.get("/machines/", response=list[MachineItem])
 def list_machines(request, token: str):
-    return Machine.objects.filter(token=token).order_by("-pk")[:20]
+    return Machine.objects.filter(token=token).order_by("-status", "-pk")[:20]
 
 
 @api.post("/servers/", response={201: ServerItem})
