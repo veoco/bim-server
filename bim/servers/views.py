@@ -78,7 +78,7 @@ def finish_task(request, pk: int, token: str, form: TaskFinish):
     task.upload = form.upload
     task.upload_status = form.upload_status
     task.latency = form.latency
-    task.jitter = task.jitter
+    task.jitter = form.jitter
     task.status = 3  # Finish
     task.save()
 
