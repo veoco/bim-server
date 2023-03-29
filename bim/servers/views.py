@@ -33,7 +33,14 @@ def list_machines(request, token: str):
 
 @api.post("/servers/", response={201: ServerItem})
 def create_server(request, form: ServerCreate):
-    server = Server.objects.create(**form.dict())
+    server = Server.objects.create(
+        token=form.token,
+        name=form.name,
+        download_url=str(form.download_url),
+        upload_url=str(form.upload_url),
+        ipv6=form.ipv6,
+        multi=form.multi,
+    )
 
     token = form.token
     online_machines = Machine.objects.filter(token=token).exclude(
@@ -75,8 +82,8 @@ def finish_task(request, pk: int, token: str, form: TaskFinish):
     task.status = 3  # Finish
     task.save()
 
-    for t in Task.objects.filter(server=task.server, status=1): # 1: Block
-        t.status = 2 # 2: Work 
+    for t in Task.objects.filter(server=task.server, status=1):  # 1: Block
+        t.status = 2  # 2: Work
         break
 
     return 200, {"msg": "ok"}
