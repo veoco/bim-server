@@ -100,6 +100,7 @@ def list_tasks(
 ):
     if Machine.objects.filter(pk=machine_id).exists():
         machine = Machine.objects.get(pk=machine_id)
+        machine.status = 1
         machine.save()
 
     tasks = (
