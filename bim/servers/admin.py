@@ -24,6 +24,7 @@ class TcpPingAdmin(admin.ModelAdmin):
         "target",
         "ping_min",
         "ping_jitter",
+        "ping_failed"
         "created",
     )
 
