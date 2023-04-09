@@ -58,7 +58,7 @@ def create_machine(request, form: MachineCreate):
 
 @api.post("/machines/latest", response=list[MachineItem])
 def list_machines(request):
-    return Machine.objects.order_by("-status", "-pk")[:20]
+    return Machine.objects.order_by("-pk")[:20]
 
 
 @api.post(
