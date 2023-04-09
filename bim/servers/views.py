@@ -107,7 +107,7 @@ def add_tcp_ping_data(request, mid: int, tid: int, form: TcpPingCreate):
 def list_tcp_ping_data(request, mid: int, tid: int):
     if (
         not Target.objects.select_related("machine")
-        .filter(tid=tid, machine__id=mid)
+        .filter(pk=tid, machine__id=mid)
         .exists()
     ):
         return 404, {"msg": "Not found"}
