@@ -81,7 +81,10 @@ def add_tcp_ping_data(request, mid: int, tid: int, form: TcpPingCreate):
 
     target = Target.objects.get(pk=tid)
     TcpPing.objects.create(
-        target=target, ping_min=form.ping_min, ping_jitter=form.ping_jitter
+        target=target,
+        ping_min=form.ping_min,
+        ping_jitter=form.ping_jitter,
+        ping_failed=form.ping_failed,
     )
 
     return 200, {"msg": "ok"}

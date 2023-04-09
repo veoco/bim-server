@@ -37,3 +37,4 @@ class TcpPing(models.Model):
 
     ping_min = models.FloatField(null=True, blank=True)
     ping_jitter = models.FloatField(null=True, blank=True)
+    ping_failed = models.SmallIntegerField(default=0)

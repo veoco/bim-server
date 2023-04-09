@@ -37,9 +37,11 @@ class TargetItem(Schema):
 class TcpPingCreate(Schema):
     ping_min: float
     ping_jitter: float
+    ping_failed: int
 
 
 class TcpPingData(Schema):
     created: datetime
     ping_min: float
     ping_jitter: float
+    ping_failed: int
