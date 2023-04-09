@@ -25,12 +25,20 @@ class MachineItem(Schema):
         return ".".join([ip_parts[0], "*", "*", ip_parts[-1]])
 
 
-class TargetItem(Schema):
+class TargetWorkerItem(Schema):
     id: int
     name: str
     created: datetime
 
     url: HttpUrl
+    ipv6: bool
+
+
+class TargetItem(Schema):
+    id: int
+    name: str
+    created: datetime
+
     ipv6: bool
 
 

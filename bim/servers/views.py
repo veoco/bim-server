@@ -10,6 +10,7 @@ from .schemas import (
     Message,
     MachineCreate,
     MachineItem,
+    TargetWorkerItem,
     TargetItem,
     TcpPingCreate,
     TcpPingData,
@@ -61,7 +62,17 @@ def list_machines(request):
 
 
 @api.post(
-    "/machines/{mid}/targets/latest", response={200: list[TargetItem], 404: Message}
+    "/machines/{mid}/targets/worker", auth=ApiKey(), response={200: list[TargetWorkerItem], 404: Message}
+)
+def list_worker_target(request, mid: int):
+    if not Machine.objects.filter(pk=mid).exists():
+        return 404, {"msg": "Not found"}
+
+    return Target.objects.filter(machine__id=mid).order_by("-pk")[:20]
+
+
+@api.post(
+    "/machines/{mid}/targets/", response={200: list[TargetItem], 404: Message}
 )
 def list_target(request, mid: int):
     if not Machine.objects.filter(pk=mid).exists():
