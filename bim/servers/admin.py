@@ -1,39 +1,33 @@
 from django.contrib import admin
 
-from .models import Machine, Server, Task
+from .models import Machine, Target, TcpPing
 
 
 class MachineAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "ip", "token", "status")
+    list_display = ("id", "name", "ip", "created")
 
 
-class ServerAdmin(admin.ModelAdmin):
-    list_display = (
-        "id",
-        "name",
-        "token",
-        "download_url",
-        "upload_url",
-        "ipv6",
-        "multi",
-    )
-
-
-class TaskAdmin(admin.ModelAdmin):
+class TargetAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "machine",
-        "server",
-        "upload",
-        "upload_status",
-        "download",
-        "download_status",
-        "latency",
-        "jitter",
-        "status",
+        "name",
+        "url",
+        "ipv6",
+        "created",
+    )
+
+
+class TcpPingAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "target",
+        "ping_min",
+        "ping_jitter",
+        "created",
     )
 
 
 admin.site.register(Machine, MachineAdmin)
-admin.site.register(Server, ServerAdmin)
-admin.site.register(Task, TaskAdmin)
+admin.site.register(Target, TargetAdmin)
+admin.site.register(TcpPing, TcpPingAdmin)

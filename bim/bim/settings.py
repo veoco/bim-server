@@ -28,6 +28,8 @@ DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = ["*"]
 
+API_KEY = os.environ.get("API_KEY")
+
 
 # Application definition
 

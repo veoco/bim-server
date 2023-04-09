@@ -8,75 +8,38 @@ class Message(Schema):
     msg: str
 
 
-class IdMessage(Schema):
-    id: str
-
-
 class MachineCreate(Schema):
-    token: str = Field(min_length=5, max_length=64)
-    name: str = Field(min_length=1, max_length=16)
+    name: str = Field(min_length=1, max_length=32)
 
 
 class MachineItem(Schema):
     id: int
-    token: str
     name: str
     ip: str
 
     created: datetime
-    modified: datetime
-    status: int
 
     @staticmethod
     def resolve_ip(obj):
         ip_parts = obj.ip.split(".")
-        return ".".join([ip_parts[0], "*", '*',ip_parts[-1]])
+        return ".".join([ip_parts[0], "*", "*", ip_parts[-1]])
 
 
-class ServerCreate(Schema):
-    token: str = Field(min_length=5, max_length=64)
-    name: str = Field(min_length=1, max_length=16)
-    download_url: HttpUrl
-    upload_url: HttpUrl
-    ipv6: bool
-    multi: bool
-
-
-class ServerItem(Schema):
+class TargetItem(Schema):
     id: int
-    token: str
     name: str
-
     created: datetime
-    modified: datetime
 
-    download_url: HttpUrl
-    upload_url: HttpUrl
+    url: HttpUrl
     ipv6: bool
-    multi: bool
 
 
-class TaskFinish(Schema):
-    download: float
-    download_status: str = Field(min_length=1, max_length=16)
-    upload: float
-    upload_status: str = Field(min_length=1, max_length=16)
-    latency: float
-    jitter: float
+class TcpPingCreate(Schema):
+    ping_min: float
+    ping_jitter: float
 
-class TaskWithMachineAndServerItem(Schema):
-    id: int 
 
-    machine: MachineItem
-    server: ServerItem
-
+class TcpPingData(Schema):
     created: datetime
-    modified: datetime
-    status: int
-
-    download: float
-    download_status: str
-    upload: float
-    upload_status:str
-    latency: float
-    jitter: float
+    ping_min: float
+    ping_jitter: float

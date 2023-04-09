@@ -2,57 +2,38 @@ from django.db import models
 
 
 class Machine(models.Model):
-    token = models.SlugField(max_length=64, db_index=True)
-    name = models.CharField(max_length=16)
+    name = models.CharField(max_length=32)
     ip = models.GenericIPAddressField(db_index=True)
-
     created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
-    status = models.SmallIntegerField(default=1)
 
     def __str__(self):
         return self.name
 
 
-class Server(models.Model):
-    token = models.SlugField(max_length=64, db_index=True)
-    name = models.CharField(max_length=16)
-
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
-
-    download_url = models.URLField()
-    upload_url = models.URLField()
-    ipv6 = models.BooleanField(default=False)
-    multi = models.BooleanField(default=False)
-
-    def __str__(self):
-        return self.name
-
-
-class Task(models.Model):
+class Target(models.Model):
     machine = models.ForeignKey(
         Machine,
         on_delete=models.CASCADE,
-        related_name="tasks",
-        related_query_name="task",
-        db_constraint=False,
+        related_name="targets",
+        related_query_name="target",
     )
-    server = models.ForeignKey(
-        Server,
-        on_delete=models.CASCADE,
-        related_name="tasks",
-        related_query_name="task",
-        db_constraint=False,
-    )
-
+    name = models.CharField(max_length=32)
+    url = models.URLField(db_index=True)
+    ipv6 = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
-    status = models.SmallIntegerField(default=1)
 
-    download = models.FloatField(default=0)
-    download_status = models.CharField(max_length=16, default="")
-    upload = models.FloatField(default=0)
-    upload_status = models.CharField(max_length=16, default="")
-    latency = models.FloatField(default=0)
-    jitter = models.FloatField(default=0)
+    def __str__(self):
+        return self.name
+
+
+class TcpPing(models.Model):
+    target = models.ForeignKey(
+        Target,
+        on_delete=models.CASCADE,
+        related_name="tcp_pings",
+        related_query_name="tcp_ping",
+    )
+    created = models.DateTimeField(auto_now_add=True)
+
+    ping_min = models.FloatField(null=True, blank=True)
+    ping_jitter = models.FloatField(null=True, blank=True)
