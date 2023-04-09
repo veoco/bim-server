@@ -11,7 +11,7 @@ from .schemas import (
     MachineCreate,
     MachineItem,
     TargetWorkerItem,
-    TargetItem,
+    MachineWithTargets,
     TcpPingCreate,
     TcpPingData,
 )
@@ -61,11 +61,11 @@ def list_machines(request):
     return Machine.objects.order_by("-pk")[:20]
 
 
-@api.post("/machines/{mid}/", response={200: MachineItem, 404: Message})
+@api.post("/machines/{mid}/", response={200: MachineWithTargets, 404: Message})
 def get_machine(request, mid: int):
     if not Machine.objects.filter(pk=mid).exists():
         return 404, {"msg": "Not found"}
-    return Machine.objects.get(pk=mid)
+    return Machine.objects.select_related("targets").get(pk=mid)
 
 
 @api.post(
@@ -73,15 +73,7 @@ def get_machine(request, mid: int):
     auth=ApiKey(),
     response={200: list[TargetWorkerItem], 404: Message},
 )
-def list_worker_target(request, mid: int):
-    if not Machine.objects.filter(pk=mid).exists():
-        return 404, {"msg": "Not found"}
-
-    return Target.objects.filter(machine__id=mid).order_by("-pk")[:20]
-
-
-@api.post("/machines/{mid}/targets/", response={200: list[TargetItem], 404: Message})
-def list_target(request, mid: int):
+def list_targets(request, mid: int):
     if not Machine.objects.filter(pk=mid).exists():
         return 404, {"msg": "Not found"}
 

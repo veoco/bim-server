@@ -53,3 +53,18 @@ class TcpPingData(Schema):
     ping_min: float
     ping_jitter: float
     ping_failed: int
+
+
+class MachineWithTargets(Schema):
+    id: int
+    name: str
+    ip: str
+
+    created: datetime
+
+    targets: list[TargetItem]
+
+    @staticmethod
+    def resolve_ip(obj):
+        ip_parts = obj.ip.split(".")
+        return ".".join([ip_parts[0], "*", "*", ip_parts[-1]])
