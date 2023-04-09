@@ -62,7 +62,7 @@ class MachineWithTargets(Schema):
 
     created: datetime
 
-    targets: list[TargetItem] = Field(..., alias="target.all")
+    targets: list[TargetItem] = Field(..., alias="targets.all")
 
     @staticmethod
     def resolve_ip(obj):

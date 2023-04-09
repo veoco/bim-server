@@ -65,7 +65,7 @@ def list_machines(request):
 def get_machine(request, mid: int):
     if not Machine.objects.filter(pk=mid).exists():
         return 404, {"msg": "Not found"}
-    return Machine.objects.select_related("target").get(pk=mid)
+    return Machine.objects.get(pk=mid)
 
 
 @api.post(
