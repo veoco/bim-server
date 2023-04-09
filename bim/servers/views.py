@@ -87,7 +87,7 @@ def add_tcp_ping_data(request, mid: int, tid: int, form: TcpPingCreate):
     return 200, {"msg": "ok"}
 
 
-@api.get(
+@api.post(
     "/machines/{mid}/targets/{tid}/latest",
     response={200: list[TcpPingData], 404: Message},
 )
