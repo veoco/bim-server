@@ -65,32 +65,32 @@ def list_machines(request):
 def get_machine(request, mid: int):
     if not Machine.objects.filter(pk=mid).exists():
         return 404, {"msg": "Not found"}
-    return Machine.objects.get(pk=mid)
+
+    machine = Machine.objects.get(pk=mid)
+    targets = list(Target.objects.all())
+    return {"detail": machine, "targets": targets}
 
 
 @api.post(
-    "/machines/{mid}/targets/worker",
+    "/targets/worker",
     auth=ApiKey(),
-    response={200: list[TargetWorkerItem], 404: Message},
+    response=list[TargetWorkerItem],
 )
-def list_targets(request, mid: int):
-    if not Machine.objects.filter(pk=mid).exists():
-        return 404, {"msg": "Not found"}
-
-    return Target.objects.filter(machine__id=mid).order_by("-pk")[:20]
+def list_targets(request):
+    return Target.objects.all().order_by("-pk")[:20]
 
 
 @api.post("/machines/{mid}/targets/{tid}/", auth=ApiKey(), response=Message)
 def add_tcp_ping_data(request, mid: int, tid: int, form: TcpPingCreate):
-    if (
-        not Target.objects.select_related("machine")
-        .filter(pk=tid, machine__id=mid)
-        .exists()
+    if (not Machine.objects.filter(pk=mid).exists()) or (
+        not Target.objects.filter(pk=tid).exists()
     ):
         return 404, {"msg": "Not found"}
 
     target = Target.objects.get(pk=tid)
+    machine = Machine.objects.get(pk=mid)
     TcpPing.objects.create(
+        machine=machine,
         target=target,
         ping_min=form.ping_min,
         ping_jitter=form.ping_jitter,
@@ -105,12 +105,12 @@ def add_tcp_ping_data(request, mid: int, tid: int, form: TcpPingCreate):
     response={200: list[TcpPingData], 404: Message},
 )
 def list_tcp_ping_data(request, mid: int, tid: int):
-    if (
-        not Target.objects.select_related("machine")
-        .filter(pk=tid, machine__id=mid)
-        .exists()
+    if (not Machine.objects.filter(pk=mid).exists()) or (
+        not Target.objects.filter(pk=tid).exists()
     ):
         return 404, {"msg": "Not found"}
 
     start_time = timezone.now() - timedelta(hours=25)
-    return TcpPing.objects.filter(created__gte=start_time)
+    return TcpPing.objects.filter(
+        machine__id=mid, target__id=tid, created__gte=start_time
+    )

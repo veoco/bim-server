@@ -11,12 +11,6 @@ class Machine(models.Model):
 
 
 class Target(models.Model):
-    machine = models.ForeignKey(
-        Machine,
-        on_delete=models.CASCADE,
-        related_name="targets",
-        related_query_name="target",
-    )
     name = models.CharField(max_length=32)
     url = models.URLField(db_index=True)
     ipv6 = models.BooleanField(default=False)
@@ -27,6 +21,12 @@ class Target(models.Model):
 
 
 class TcpPing(models.Model):
+    machine = models.ForeignKey(
+        Machine,
+        on_delete=models.CASCADE,
+        related_name="tcp_pings",
+        related_query_name="tcp_ping",
+    )
     target = models.ForeignKey(
         Target,
         on_delete=models.CASCADE,

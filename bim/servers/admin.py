@@ -10,7 +10,6 @@ class MachineAdmin(admin.ModelAdmin):
 class TargetAdmin(admin.ModelAdmin):
     list_display = (
         "id",
-        "machine",
         "name",
         "url",
         "ipv6",
@@ -21,6 +20,7 @@ class TargetAdmin(admin.ModelAdmin):
 class TcpPingAdmin(admin.ModelAdmin):
     list_display = (
         "id",
+        "machine",
         "target",
         "ping_min",
         "ping_jitter",

@@ -56,15 +56,5 @@ class TcpPingData(Schema):
 
 
 class MachineWithTargets(Schema):
-    id: int
-    name: str
-    ip: str
-
-    created: datetime
-
-    targets: list[TargetItem] = Field(..., alias="targets.all")
-
-    @staticmethod
-    def resolve_ip(obj):
-        ip_parts = obj.ip.split(".")
-        return ".".join([ip_parts[0], "*", "*", ip_parts[-1]])
+    detail: MachineItem
+    targets: list[TargetItem]
