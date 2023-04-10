@@ -110,7 +110,7 @@ def list_tcp_ping_data(request, mid: int, tid: int):
     ):
         return 404, {"msg": "Not found"}
 
-    start_time = timezone.now() - timedelta(hours=25)
+    start_time = timezone.now() - timedelta(hours=24)
     return TcpPing.objects.filter(
         machine__id=mid, target__id=tid, created__gte=start_time
     )
