@@ -101,16 +101,23 @@ def add_tcp_ping_data(request, mid: int, tid: int, form: TcpPingCreate):
 
 
 @api.post(
-    "/machines/{mid}/targets/{tid}/latest",
+    "/machines/{mid}/targets/{tid}/{delta}",
     response={200: list[TcpPingData], 404: Message},
 )
-def list_tcp_ping_data(request, mid: int, tid: int):
+def list_tcp_ping_data(request, mid: int, tid: int, delta: str):
     if (not Machine.objects.filter(pk=mid).exists()) or (
         not Target.objects.filter(pk=tid).exists()
     ):
         return 404, {"msg": "Not found"}
 
-    start_time = timezone.now() - timedelta(hours=24)
+    if delta == "latest":
+        t = timedelta(hours=24)
+    elif delta == "7d":
+        t = timedelta(days=7)
+    else:
+        return 404, {"msg": "Not found"}
+
+    start_time = timezone.now() - t
     return TcpPing.objects.filter(
         machine__id=mid, target__id=tid, created__gte=start_time
     )
