@@ -21,8 +21,21 @@ class MachineItem(Schema):
 
     @staticmethod
     def resolve_ip(obj):
-        ip_parts = obj.ip.split(".")
-        return ".".join([ip_parts[0], "*", "*", ip_parts[-1]])
+        ipv4 = True if "." in obj.ip else False
+        if ipv4:
+            parts = obj.ip.split(".")
+            ip = ".".join(parts[:2]) + ".*.*"
+        else:
+            parts = obj.ip.split(":")
+            if len(parts) > 4:
+                prefix = ":".join(parts[:-4])
+            elif len(parts) > 1:
+                prefix = ":".join(parts[:-1])
+            else:
+                prefix = obj.ip
+            ip = prefix+"::*"
+
+        return ip
 
 
 class TargetWorkerItem(Schema):
