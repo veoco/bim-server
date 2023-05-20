@@ -17,6 +17,7 @@ class MachineItem(Schema):
     name: str
     ip: str
 
+    nickname: str
     created: datetime
 
     @staticmethod

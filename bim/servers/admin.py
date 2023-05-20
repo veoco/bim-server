@@ -4,7 +4,7 @@ from .models import Machine, Target, TcpPing
 
 
 class MachineAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "ip", "created")
+    list_display = ("id", "name", "nickname", "ip", "created")
 
 
 class TargetAdmin(admin.ModelAdmin):

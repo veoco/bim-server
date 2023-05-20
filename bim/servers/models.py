@@ -2,8 +2,9 @@ from django.db import models
 
 
 class Machine(models.Model):
-    name = models.CharField(max_length=32)
-    ip = models.GenericIPAddressField(db_index=True)
+    name = models.CharField(max_length=32, unique=True)
+    ip = models.GenericIPAddressField()
+    nickname = models.CharField(max_length=32, default="XXX")
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

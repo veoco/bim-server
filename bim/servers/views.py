@@ -47,21 +47,8 @@ def create_machine(request, form: MachineCreate):
         ip = request.META.get("REMOTE_ADDR")
 
     name = form.name
-    ipv4 = True if '.' in ip else False
-    if ipv4:
-        parts = ip.split('.')
-        prefix = '.'.join(parts[:-1])
-    else:
-        parts = ip.split(':')
-        if len(parts) > 4:
-            prefix = ':'.join(parts[:-4])
-        elif len(parts) > 1:
-            prefix = ':'.join(parts[:-1])
-        else:
-            prefix = ip
-
-    if Machine.objects.filter(ip__startswith=prefix, name=name).exists():
-        machine = Machine.objects.filter(ip__startswith=prefix, name=name).first()
+    if Machine.objects.filter(name=name).exists():
+        machine = Machine.objects.filter(name=name).first()
         machine.ip = ip
         machine.save()
     else:
