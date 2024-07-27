@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from ninja import Schema, Field
-from pydantic import HttpUrl
 
 
 class Message(Schema):
@@ -44,7 +43,7 @@ class TargetWorkerItem(Schema):
     name: str
     created: datetime
 
-    url: HttpUrl
+    url: str
     ipv6: bool
 
 
