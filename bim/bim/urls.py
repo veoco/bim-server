@@ -19,8 +19,12 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
+from ninja import NinjaAPI
 
-from rounds.views import api
+from rounds.apis import router as rounds_router
+
+api = NinjaAPI()
+api.add_router("", rounds_router)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
