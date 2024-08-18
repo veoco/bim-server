@@ -14,6 +14,8 @@ import os
 
 from pathlib import Path
 
+import pymysql
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -97,7 +99,7 @@ WSGI_APPLICATION = "bim.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "mysql.connector.django",
+        "ENGINE": "django.db.backends.mysql",
         "NAME": os.environ.get("DB_NAME", "test"),
         "USER": os.environ.get("DB_USER", "test"),
         "PASSWORD": os.environ.get("DB_PASSWORD", "test"),
@@ -105,6 +107,8 @@ DATABASES = {
         "PORT": os.environ.get("DB_PORT", "3306"),
     }
 }
+
+pymysql.install_as_MySQLdb()
 
 
 # Password validation
