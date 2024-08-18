@@ -49,12 +49,12 @@ def create_machine(request, form: MachineCreate):
     return 201, machine
 
 
-@router.post("/machines/latest", response=list[MachineItem])
+@router.get("/machines/latest", response=list[MachineItem])
 def list_machines(request):
     return Machine.objects.order_by("-pk")[:20]
 
 
-@router.post("/machines/{mid}/", response={200: MachineWithTargets, 404: Message})
+@router.get("/machines/{mid}/", response={200: MachineWithTargets, 404: Message})
 def get_machine(request, mid: int):
     if not Machine.objects.filter(pk=mid).exists():
         return 404, {"msg": "Not found"}
@@ -64,7 +64,7 @@ def get_machine(request, mid: int):
     return {"detail": machine, "targets": targets}
 
 
-@router.post(
+@router.get(
     "/targets/worker",
     auth=ApiKey(),
     response=list[TargetWorkerItem],
@@ -93,7 +93,7 @@ def add_tcp_ping_data(request, mid: int, tid: int, form: TcpPingCreate):
     return 200, {"msg": "ok"}
 
 
-@router.post(
+@router.get(
     "/machines/{mid}/targets/{tid}/{delta}",
     response={200: list[TcpPingData], 404: Message},
 )
