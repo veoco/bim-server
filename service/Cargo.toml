@@ -1,0 +1,24 @@
+[package]
+name = "server-service"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+entity = { path = "../entity" }
+
+serde = "1"
+chrono = "0.4"
+validator = { version = "0.18", features = ["derive"] }
+
+[dependencies.sea-orm]
+version = "1"
+features = [
+    "debug-print",
+    "runtime-tokio",
+    "sqlx-sqlite",
+    "with-chrono",
+]
+
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt"] }
