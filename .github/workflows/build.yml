@@ -34,8 +34,7 @@ jobs:
         timeout-minutes: 15
         run: |
           mkdir -p ./build/release
-          export RUSTFLAGS="-C link-arg=-lgcc -Clink-arg=-static-libgcc"
-          cross build --target ${{ matrix.target }} -r -Z build-std=std,panic_abort -Z build-std-features=panic_immediate_abort
+          cross build --target ${{ matrix.target }} -r
           cp ./target/${{ matrix.target }}/release/bim-server ./build/release/bim-server-${{ matrix.target }}
       
       - name: UPX
