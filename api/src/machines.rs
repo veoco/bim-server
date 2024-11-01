@@ -26,17 +26,22 @@ pub async fn create_machine_client(
     let mut status = StatusCode::INTERNAL_SERVER_ERROR;
 
     let ip = ip.to_string();
-    let form = MachineCreateAdmin {
-        name: machine_create.name.to_string(),
-        ip,
-        nickname: "XXX".to_string(),
-    };
 
     if let Ok(Some(machine)) =
         QueryCore::find_machine_by_name(&state.conn, &machine_create.name).await
     {
+        let form = MachineCreateAdmin {
+            name: machine.name,
+            ip,
+            nickname: machine.nickname,
+        };
         let _ = MutationCore::edit_machine(&state.conn, machine.id, &form).await;
     } else {
+        let form = MachineCreateAdmin {
+            name: machine_create.name.to_string(),
+            ip,
+            nickname: "XXX".to_string(),
+        };
         let _ = MutationCore::create_machine(&state.conn, &form).await;
     }
 
