@@ -51,9 +51,9 @@ jobs:
           shasum -a 256 bim-server-${{ matrix.target }} > bim-server-${{ matrix.target }}.sha256
     
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: bim
+          name: bim-${{ matrix.target }}
           path: build/release/*
 
   build-windows:
@@ -82,9 +82,9 @@ jobs:
           Get-FileHash bim-server.exe | Format-List > bim-server.exe.sha256
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: bim
+          name: bim-win
           path: build/release/*
     
   build-macos:
@@ -113,7 +113,7 @@ jobs:
           shasum -a 256 bim-server-macos > bim-server-macos.sha256
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: bim
+          name: bim-mac
           path: build/release/*
