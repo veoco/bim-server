@@ -1,0 +1,122 @@
+use sea_orm_migration::prelude::*;
+
+#[derive(DeriveMigrationName)]
+pub struct Migration;
+
+#[async_trait::async_trait]
+impl MigrationTrait for Migration {
+    async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        manager
+            .alter_table(
+                Table::alter()
+                    .table(Ping::Table)
+                    .drop_column(Ping::Min)
+                    .to_owned(),
+            )
+            .await?;
+        manager
+            .alter_table(
+                Table::alter()
+                    .table(Ping::Table)
+                    .drop_column(Ping::Jitter)
+                    .to_owned(),
+            )
+            .await?;
+        manager
+            .alter_table(
+                Table::alter()
+                    .table(Ping::Table)
+                    .drop_column(Ping::Failed)
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .alter_table(
+                Table::alter()
+                    .table(Ping::Table)
+                    .add_column(ColumnDef::new(Ping::Min).integer().not_null().default(0))
+                    .to_owned(),
+            )
+            .await?;
+        manager
+            .alter_table(
+                Table::alter()
+                    .table(Ping::Table)
+                    .add_column(ColumnDef::new(Ping::Avg).integer().not_null().default(0))
+                    .to_owned(),
+            )
+            .await?;
+        manager
+            .alter_table(
+                Table::alter()
+                    .table(Ping::Table)
+                    .add_column(ColumnDef::new(Ping::Fail).integer().not_null().default(0))
+                    .to_owned(),
+            )
+            .await?;
+        Ok(())
+    }
+
+    async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        manager
+            .alter_table(
+                Table::alter()
+                    .table(Ping::Table)
+                    .drop_column(Ping::Min)
+                    .to_owned(),
+            )
+            .await?;
+        manager
+            .alter_table(
+                Table::alter()
+                    .table(Ping::Table)
+                    .drop_column(Ping::Avg)
+                    .to_owned(),
+            )
+            .await?;
+        manager
+            .alter_table(
+                Table::alter()
+                    .table(Ping::Table)
+                    .drop_column(Ping::Fail)
+                    .to_owned(),
+            )
+            .await?;
+        manager
+            .alter_table(
+                Table::alter()
+                    .table(Ping::Table)
+                    .add_column(ColumnDef::new(Ping::Min).float().not_null().default(0.0))
+                    .to_owned(),
+            )
+            .await?;
+        manager
+            .alter_table(
+                Table::alter()
+                    .table(Ping::Table)
+                    .add_column(ColumnDef::new(Ping::Jitter).float().not_null().default(0.0))
+                    .to_owned(),
+            )
+            .await?;
+        manager
+            .alter_table(
+                Table::alter()
+                    .table(Ping::Table)
+                    .add_column(ColumnDef::new(Ping::Failed).integer().not_null().default(0))
+                    .to_owned(),
+            )
+            .await?;
+        Ok(())
+    }
+}
+
+#[derive(DeriveIden)]
+enum Ping {
+    Table,
+    Min,
+    Avg,
+    Fail,
+    Jitter,
+    Failed,
+}

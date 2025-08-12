@@ -106,9 +106,9 @@ impl Mutation {
             target_id: Set(tid),
             ipv6: Set(ping_create.ipv6),
             created: Set(now),
-            min: Set(ping_create.min),
-            jitter: Set(ping_create.jitter),
-            failed: Set(ping_create.failed),
+            min: Set(ping_create.min as i32),
+            avg: Set(ping_create.avg as i32),
+            fail: Set(ping_create.fail as i32),
             ..Default::default()
         }
         .save(db)

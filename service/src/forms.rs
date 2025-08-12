@@ -10,12 +10,12 @@ pub struct MachineCreate {
 #[derive(Debug, Validate, Deserialize)]
 pub struct PingCreate {
     pub ipv6: bool,
-    #[validate(range(min = 0.0, max = 1000.0))]
-    pub min: f32,
-    #[validate(range(min = 0.0, max = 1000.0))]
-    pub jitter: f32,
-    #[validate(range(min = 0, max = 20))]
-    pub failed: i32,
+    #[validate(range(max = 1000))]
+    pub min: u16,
+    #[validate(range(max = 1000))]
+    pub avg: u16,
+    #[validate(range(max = 20))]
+    pub fail: u8,
 }
 
 #[derive(Debug, Validate, Deserialize)]

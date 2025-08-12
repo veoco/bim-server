@@ -14,10 +14,10 @@ pub struct Model {
     pub ipv6: bool,
     pub created: DateTime,
     #[sea_orm(column_type = "Float")]
-    pub min: f32,
+    pub min: i32,
     #[sea_orm(column_type = "Float")]
-    pub jitter: f32,
-    pub failed: i32,
+    pub avg: i32,
+    pub fail: i32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

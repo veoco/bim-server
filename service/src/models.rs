@@ -76,9 +76,9 @@ impl From<MachinePublic> for MachineTargetsPublic {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct PingPublic {
     pub created: i64,
-    pub min: f32,
-    pub jitter: f32,
-    pub failed: i32,
+    pub min: i32,
+    pub avg: i32,
+    pub fail: i32,
 }
 
 impl From<Ping> for PingPublic {
@@ -86,8 +86,8 @@ impl From<Ping> for PingPublic {
         Self {
             created: p.created.and_utc().timestamp(),
             min: p.min,
-            jitter: p.jitter,
-            failed: p.failed,
+            avg: p.avg,
+            fail: p.fail,
         }
     }
 }
