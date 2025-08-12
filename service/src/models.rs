@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use ::entity::{machine::Model as Machine, ping::Model as Ping, target::Model as Target};
+use ::entity::{machine::Model as Machine, target::Model as Target};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct MachinePublic {
@@ -69,25 +69,6 @@ impl From<MachinePublic> for MachineTargetsPublic {
             nickname: m.nickname,
             created: m.created,
             targets: vec![],
-        }
-    }
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct PingPublic {
-    pub created: i64,
-    pub min: i32,
-    pub avg: i32,
-    pub fail: i32,
-}
-
-impl From<Ping> for PingPublic {
-    fn from(p: Ping) -> Self {
-        Self {
-            created: p.created.and_utc().timestamp(),
-            min: p.min,
-            avg: p.avg,
-            fail: p.fail,
         }
     }
 }

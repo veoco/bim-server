@@ -10,9 +10,7 @@ use serde_json::{json, Value};
 
 use crate::extractors::ApiClient;
 use crate::AppState;
-use server_service::{
-    Mutation as MutationCore, PingCreate, PingFilter, PingPublic, Query as QueryCore,
-};
+use server_service::{Mutation as MutationCore, PingCreate, PingFilter, Query as QueryCore};
 
 pub async fn create_ping_client(
     State(state): State<Arc<AppState>>,
@@ -59,10 +57,11 @@ pub async fn list_pings(
             {
                 let mut outputs = vec![];
                 for p in pings {
-                    let p = PingPublic::from(p);
-                    outputs.push(p);
+                    outputs.push((p.created.and_utc().timestamp_millis(), p.min, p.avg, p.fail));
                 }
-                res = json!(outputs);
+                res = json!({
+                    "results": outputs,
+                });
                 status = StatusCode::OK;
             }
         }
