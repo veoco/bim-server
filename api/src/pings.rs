@@ -57,7 +57,7 @@ pub async fn list_pings(
             {
                 let mut outputs = vec![];
                 for p in pings {
-                    outputs.push((p.created.and_utc().timestamp_millis(), p.min, p.avg, p.fail));
+                    outputs.push((p.created.and_utc().timestamp(), p.min, p.avg, p.fail));
                 }
                 res = json!({
                     "results": outputs,
