@@ -101,11 +101,16 @@ impl Mutation {
         tid: i32,
     ) -> Result<ping::ActiveModel, DbErr> {
         let now = Utc::now().naive_utc();
+        let rounded = now
+            .with_minute((now.minute() / 5) * 5)
+            .and_then(|dt| dt.with_second(0))
+            .and_then(|dt| dt.with_nanosecond(0))
+            .unwrap_or(now);
         let ping = ping::ActiveModel {
             machine_id: Set(mid),
             target_id: Set(tid),
             ipv6: Set(ping_create.ipv6),
-            created: Set(now),
+            created: Set(rounded),
             min: Set(ping_create.min as i32),
             avg: Set(ping_create.avg as i32),
             fail: Set(ping_create.fail as i32),
