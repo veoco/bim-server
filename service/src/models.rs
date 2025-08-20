@@ -1,4 +1,3 @@
-use chrono::naive::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
 use ::entity::{machine::Model as Machine, target::Model as Target};
@@ -8,8 +7,8 @@ pub struct MachinePublic {
     pub id: i32,
     pub ip: String,
     pub nickname: String,
-    pub created: NaiveDateTime,
-    pub updated: Option<NaiveDateTime>,
+    pub created: u64,
+    pub updated: Option<u64>,
 }
 
 impl From<Machine> for MachinePublic {
@@ -32,8 +31,8 @@ impl From<Machine> for MachinePublic {
             id: m.id,
             nickname: m.nickname,
             ip: ip,
-            created: m.created,
-            updated: m.updated,
+            created: m.created.and_utc().timestamp() as u64,
+            updated: m.updated.map(|dt| dt.and_utc().timestamp() as u64),
         }
     }
 }
@@ -42,8 +41,8 @@ impl From<Machine> for MachinePublic {
 pub struct TargetPublic {
     pub id: i32,
     pub name: String,
-    pub created: NaiveDateTime,
-    pub updated: Option<NaiveDateTime>,
+    pub created: u64,
+    pub updated: Option<u64>,
 }
 
 impl From<Target> for TargetPublic {
@@ -51,8 +50,8 @@ impl From<Target> for TargetPublic {
         Self {
             id: t.id,
             name: t.name,
-            created: t.created,
-            updated: t.updated,
+            created: t.created.and_utc().timestamp() as u64,
+            updated: t.updated.map(|dt| dt.and_utc().timestamp() as u64),
         }
     }
 }
@@ -62,7 +61,7 @@ pub struct MachineTargetsPublic {
     pub id: i32,
     pub ip: String,
     pub nickname: String,
-    pub created: NaiveDateTime,
+    pub created: u64,
     pub targets: Vec<TargetPublic>,
 }
 

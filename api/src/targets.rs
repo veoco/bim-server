@@ -21,12 +21,7 @@ pub async fn list_targets(State(state): State<Arc<AppState>>) -> (StatusCode, Js
     if let Ok(targets) = QueryCore::find_targets(&state.conn).await {
         let mut outputs = vec![];
         for t in targets {
-            outputs.push(TargetPublic {
-                id: t.id,
-                name: t.name,
-                created: t.created,
-                updated: t.updated,
-            });
+            outputs.push(TargetPublic::from(t));
         }
         res = json!(outputs);
         status = StatusCode::OK;
