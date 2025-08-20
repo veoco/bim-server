@@ -26,6 +26,8 @@ pub async fn create_ping_client(
             if let Ok(_) =
                 MutationCore::create_ping(&state.conn, ping_create, machine.id, target.id).await
             {
+                let _ = MutationCore::update_machine(&state.conn, machine.id).await;
+                let _ = MutationCore::update_target(&state.conn, target.id).await;
                 res = json!({"msg": "success"});
                 status = StatusCode::OK;
             }

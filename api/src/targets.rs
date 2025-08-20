@@ -10,7 +10,30 @@ use serde_json::{json, Value};
 
 use crate::extractors::{AdminUser, ApiClient};
 use crate::AppState;
-use server_service::{Mutation as MutationCore, Query as QueryCore, TargetCreateAdmin};
+use server_service::{
+    Mutation as MutationCore, Query as QueryCore, TargetCreateAdmin, TargetPublic,
+};
+
+pub async fn list_targets(State(state): State<Arc<AppState>>) -> (StatusCode, Json<Value>) {
+    let mut res = json!({"msg": "failed"});
+    let mut status = StatusCode::INTERNAL_SERVER_ERROR;
+
+    if let Ok(targets) = QueryCore::find_targets(&state.conn).await {
+        let mut outputs = vec![];
+        for t in targets {
+            outputs.push(TargetPublic {
+                id: t.id,
+                name: t.name,
+                created: t.created,
+                updated: t.updated,
+            });
+        }
+        res = json!(outputs);
+        status = StatusCode::OK;
+    }
+
+    (status, Json(res))
+}
 
 pub async fn list_targets_client(
     State(state): State<Arc<AppState>>,

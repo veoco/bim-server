@@ -4,6 +4,8 @@ mod m20241030_000001_create_machine;
 mod m20241030_000002_create_target;
 mod m20241030_000003_create_ping;
 mod m20250812_134214_modify_ping;
+mod m20250820_074013_add_updated;
+
 
 pub struct Migrator;
 
@@ -15,6 +17,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20241030_000002_create_target::Migration),
             Box::new(m20241030_000003_create_ping::Migration),
             Box::new(m20250812_134214_modify_ping::Migration),
+            Box::new(m20250820_074013_add_updated::Migration),
         ]
     }
 }

@@ -50,6 +50,16 @@ impl Mutation {
         .await
     }
 
+    pub async fn update_machine(db: &DbConn, id: i32) -> Result<machine::Model, DbErr> {
+        machine::ActiveModel {
+            id: Set(id),
+            updated: Set(Some(Utc::now().naive_utc())),
+            ..Default::default()
+        }
+        .update(db)
+        .await
+    }
+
     pub async fn delete_machine(db: &DbConn, id: i32) -> Result<DeleteResult, DbErr> {
         Machine::delete_by_id(id).exec(db).await
     }
@@ -84,6 +94,16 @@ impl Mutation {
             domain: Set(form.domain.clone()),
             ipv4: Set(form.ipv4.clone()),
             ipv6: Set(form.ipv6.clone()),
+            ..Default::default()
+        }
+        .update(db)
+        .await
+    }
+
+    pub async fn update_target(db: &DbConn, id: i32) -> Result<target::Model, DbErr> {
+        target::ActiveModel {
+            id: Set(id),
+            updated: Set(Some(Utc::now().naive_utc())),
             ..Default::default()
         }
         .update(db)

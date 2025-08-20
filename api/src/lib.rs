@@ -31,7 +31,7 @@ use machines::{
 use pings::{create_ping_client, list_pings};
 use targets::{
     create_target_admin, delete_target_admin, edit_target_admin, get_target_by_tid_admin,
-    list_targets_admin, list_targets_client,
+    list_targets, list_targets_admin, list_targets_client,
 };
 
 #[derive(Clone)]
@@ -90,6 +90,7 @@ fn build_app(state: Arc<AppState>) -> Router {
         .route("/api/machines/", get(list_machines))
         .route("/api/machines/:mid", get(get_machine_by_mid))
         .route("/api/machines/:mid/targets/:tid/:delta", get(list_pings))
+        .route("/api/targets/", get(list_targets))
         .route("/api/client/targets/", get(list_targets_client))
         .route("/api/client/machines/", post(create_machine_client))
         .route(

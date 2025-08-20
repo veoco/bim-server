@@ -15,6 +15,7 @@ pub struct Model {
     pub ipv4: Option<String>,
     pub ipv6: Option<String>,
     pub created: DateTime,
+    pub updated: Option<DateTime>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

@@ -14,6 +14,7 @@ pub struct Model {
     pub ip: String,
     pub nickname: String,
     pub created: DateTime,
+    pub updated: Option<DateTime>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
