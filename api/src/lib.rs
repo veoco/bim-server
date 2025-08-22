@@ -25,7 +25,7 @@ mod machines;
 mod pings;
 mod targets;
 use machines::{
-    create_machine_admin, create_machine_client, delete_machine_by_mid_admin, edit_machine_admin,
+    create_machine_admin, delete_machine_by_mid_admin, edit_machine_admin,
     get_machine_by_mid, get_machine_by_mid_admin, list_machines, list_machines_admin,
 };
 use pings::{create_ping_client, list_pings};
@@ -38,7 +38,6 @@ use targets::{
 pub struct AppState {
     conn: DatabaseConnection,
     admin_password: String,
-    api_token: String,
     static_root: String,
 }
 
@@ -92,11 +91,7 @@ fn build_app(state: Arc<AppState>) -> Router {
         .route("/api/machines/:mid/targets/:tid/:delta", get(list_pings))
         .route("/api/targets/", get(list_targets))
         .route("/api/client/targets/", get(list_targets_client))
-        .route("/api/client/machines/", post(create_machine_client))
-        .route(
-            "/api/client/machines/:mid/targets/:tid",
-            post(create_ping_client),
-        )
+        .route("/api/client/targets/:tid", post(create_ping_client))
         .route(
             "/api/admin/machines/",
             post(create_machine_admin).get(list_machines_admin),
@@ -140,7 +135,6 @@ async fn start() -> anyhow::Result<()> {
     let db_url = env::var("DATABASE_URL").expect("DATABASE_URL is not set in .env file");
     let addr = env::var("LISTEN_ADDRESS").unwrap_or(String::from("127.0.0.1:3000"));
     let admin_password = env::var("ADMIN_PASSWORD").unwrap_or(String::from("fake-admin-password"));
-    let api_token = env::var("API_TOKEN").unwrap_or(String::from("fake-token"));
     let static_root = env::var("STATIC_ROOT").unwrap_or(String::from("./static"));
 
     info!("Listening on http://{addr}/");
@@ -154,7 +148,6 @@ async fn start() -> anyhow::Result<()> {
     let state = Arc::new(AppState {
         conn,
         admin_password,
-        api_token,
         static_root,
     });
 

@@ -5,8 +5,8 @@ use ::entity::{machine::Model as Machine, target::Model as Target};
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct MachinePublic {
     pub id: i32,
+    pub name: String,
     pub ip: String,
-    pub nickname: String,
     pub created: u64,
     pub updated: Option<u64>,
 }
@@ -29,7 +29,7 @@ impl From<Machine> for MachinePublic {
 
         Self {
             id: m.id,
-            nickname: m.nickname,
+            name: m.name,
             ip: ip,
             created: m.created.and_utc().timestamp() as u64,
             updated: m.updated.map(|dt| dt.and_utc().timestamp() as u64),
@@ -59,8 +59,8 @@ impl From<Target> for TargetPublic {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct MachineTargetsPublic {
     pub id: i32,
+    pub name: String,
     pub ip: String,
-    pub nickname: String,
     pub created: u64,
     pub targets: Vec<TargetPublic>,
 }
@@ -69,8 +69,8 @@ impl From<MachinePublic> for MachineTargetsPublic {
     fn from(m: MachinePublic) -> Self {
         Self {
             id: m.id,
+            name: m.name,
             ip: m.ip,
-            nickname: m.nickname,
             created: m.created,
             targets: vec![],
         }

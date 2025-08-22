@@ -22,8 +22,8 @@ impl Mutation {
         let machine = machine::ActiveModel {
             name: Set(form.name.to_string()),
             ip: Set(form.ip.to_string()),
-            nickname: Set(form.nickname.to_string()),
             created: Set(now),
+            key: Set(form.key.to_string()),
             ..Default::default()
         }
         .save(db)
@@ -43,16 +43,17 @@ impl Mutation {
             name: Set(form.name.to_string()),
             ip: Set(form.ip.to_string()),
             created: Set(now),
-            nickname: Set(form.nickname.to_string()),
+            key: Set(form.key.to_string()),
             ..Default::default()
         }
         .update(db)
         .await
     }
 
-    pub async fn update_machine(db: &DbConn, id: i32) -> Result<machine::Model, DbErr> {
+    pub async fn update_machine(db: &DbConn, id: i32, ip: String) -> Result<machine::Model, DbErr> {
         machine::ActiveModel {
             id: Set(id),
+            ip: Set(ip),
             updated: Set(Some(Utc::now().naive_utc())),
             ..Default::default()
         }

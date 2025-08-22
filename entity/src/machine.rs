@@ -12,9 +12,9 @@ pub struct Model {
     #[sea_orm(unique)]
     pub name: String,
     pub ip: String,
-    pub nickname: String,
     pub created: DateTime,
     pub updated: Option<DateTime>,
+    pub key: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

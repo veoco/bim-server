@@ -5,55 +5,15 @@ use axum::{
     http::StatusCode,
     Json,
 };
-use axum_client_ip::InsecureClientIp;
 use axum_valid::Valid;
 use serde_json::{json, Value};
 
-use crate::extractors::{AdminUser, ApiClient};
+use crate::extractors::AdminUser;
 use crate::AppState;
 use server_service::{
-    MachineCreate, MachineCreateAdmin, MachinePublic, MachineTargetsPublic,
-    Mutation as MutationCore, Query as QueryCore, TargetPublic,
+    MachineCreateAdmin, MachinePublic, MachineTargetsPublic, Mutation as MutationCore,
+    Query as QueryCore, TargetPublic,
 };
-
-pub async fn create_machine_client(
-    State(state): State<Arc<AppState>>,
-    _: ApiClient,
-    InsecureClientIp(ip): InsecureClientIp,
-    Valid(Json(machine_create)): Valid<Json<MachineCreate>>,
-) -> (StatusCode, Json<Value>) {
-    let mut res = json!({"msg": "failed"});
-    let mut status = StatusCode::INTERNAL_SERVER_ERROR;
-
-    let ip = ip.to_string();
-
-    if let Ok(Some(machine)) =
-        QueryCore::find_machine_by_name(&state.conn, &machine_create.name).await
-    {
-        let form = MachineCreateAdmin {
-            name: machine.name,
-            ip,
-            nickname: machine.nickname,
-        };
-        let _ = MutationCore::edit_machine(&state.conn, machine.id, &form).await;
-    } else {
-        let form = MachineCreateAdmin {
-            name: machine_create.name.to_string(),
-            ip,
-            nickname: "XXX".to_string(),
-        };
-        let _ = MutationCore::create_machine(&state.conn, &form).await;
-    }
-
-    if let Ok(Some(machine)) =
-        QueryCore::find_machine_by_name(&state.conn, &machine_create.name).await
-    {
-        res = json!(machine);
-        status = StatusCode::CREATED;
-    }
-
-    (status, Json(res))
-}
 
 pub async fn list_machines(State(state): State<Arc<AppState>>) -> (StatusCode, Json<Value>) {
     let mut res = json!({"msg": "failed"});

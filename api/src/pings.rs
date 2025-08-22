@@ -5,6 +5,7 @@ use axum::{
     http::StatusCode,
     Json,
 };
+use axum_client_ip::InsecureClientIp;
 use axum_valid::Valid;
 use serde_json::{json, Value};
 
@@ -14,19 +15,20 @@ use server_service::{Mutation as MutationCore, PingCreate, PingFilter, Query as 
 
 pub async fn create_ping_client(
     State(state): State<Arc<AppState>>,
-    _: ApiClient,
-    Path((mid, tid)): Path<(i32, i32)>,
+    ApiClient(machine): ApiClient,
+    InsecureClientIp(ip): InsecureClientIp,
+    Path(tid): Path<i32>,
     Valid(Json(ping_create)): Valid<Json<PingCreate>>,
 ) -> (StatusCode, Json<Value>) {
     let mut res = json!({"msg": "failed"});
     let mut status = StatusCode::INTERNAL_SERVER_ERROR;
 
-    if let Ok(Some(machine)) = QueryCore::find_machine_by_id(&state.conn, mid).await {
+    if let Ok(Some(machine)) = QueryCore::find_machine_by_id(&state.conn, machine.id).await {
         if let Ok(Some(target)) = QueryCore::find_target_by_id(&state.conn, tid).await {
             if let Ok(_) =
                 MutationCore::create_ping(&state.conn, ping_create, machine.id, target.id).await
             {
-                let _ = MutationCore::update_machine(&state.conn, machine.id).await;
+                let _ = MutationCore::update_machine(&state.conn, machine.id, ip.to_string()).await;
                 let _ = MutationCore::update_target(&state.conn, target.id).await;
                 res = json!({"msg": "success"});
                 status = StatusCode::OK;

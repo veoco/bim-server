@@ -2,12 +2,6 @@ use serde::Deserialize;
 use validator::Validate;
 
 #[derive(Debug, Validate, Deserialize)]
-pub struct MachineCreate {
-    #[validate(length(min = 1, max = 32))]
-    pub name: String,
-}
-
-#[derive(Debug, Validate, Deserialize)]
 pub struct PingCreate {
     pub ipv6: bool,
     #[validate(range(max = 1000))]
@@ -27,7 +21,7 @@ pub struct PingFilter {
 pub struct MachineCreateAdmin {
     pub name: String,
     pub ip: String,
-    pub nickname: String,
+    pub key: String,
 }
 
 #[derive(Debug, Validate, Deserialize)]

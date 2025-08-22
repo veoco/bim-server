@@ -22,7 +22,7 @@ impl Query {
 
     pub async fn find_machines(db: &DbConn) -> Result<Vec<machine::Model>, DbErr> {
         Machine::find()
-            .order_by_asc(machine::Column::Nickname)
+            .order_by_asc(machine::Column::Name)
             .all(db)
             .await
     }

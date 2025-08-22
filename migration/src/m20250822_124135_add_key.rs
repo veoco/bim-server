@@ -10,15 +10,20 @@ impl MigrationTrait for Migration {
             .alter_table(
                 Table::alter()
                     .table(Machine::Table)
-                    .add_column(ColumnDef::new(Machine::Updated).date_time().null())
+                    .add_column(
+                        ColumnDef::new(Machine::Key)
+                            .string()
+                            .not_null()
+                            .default("default_key"),
+                    )
                     .to_owned(),
             )
             .await?;
         manager
             .alter_table(
                 Table::alter()
-                    .table(Target::Table)
-                    .add_column(ColumnDef::new(Target::Updated).date_time().null())
+                    .table(Machine::Table)
+                    .drop_column(Machine::Nickname)
                     .to_owned(),
             )
             .await?;
@@ -27,18 +32,18 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .alter_table(
-                Table::alter()
-                    .table(Machine::Table)
-                    .drop_column(Machine::Updated)
-                    .to_owned(),
-            )
+            .drop_table(Table::drop().table(Machine::Key).to_owned())
             .await?;
         manager
             .alter_table(
                 Table::alter()
-                    .table(Target::Table)
-                    .drop_column(Target::Updated)
+                    .table(Machine::Table)
+                    .add_column(
+                        ColumnDef::new(Machine::Nickname)
+                            .string()
+                            .not_null()
+                            .default("XXX"),
+                    )
                     .to_owned(),
             )
             .await?;
@@ -49,11 +54,6 @@ impl MigrationTrait for Migration {
 #[derive(DeriveIden)]
 enum Machine {
     Table,
-    Updated,
-}
-
-#[derive(DeriveIden)]
-enum Target {
-    Table,
-    Updated,
+    Key,
+    Nickname,
 }

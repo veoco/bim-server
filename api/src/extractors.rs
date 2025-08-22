@@ -13,6 +13,8 @@ use axum_extra::{
 use serde_json::{json, Value};
 
 use crate::AppState;
+use entity::machine::Model as Machine;
+use server_service::Query as QueryCore;
 
 pub struct AdminUser {}
 
@@ -41,7 +43,7 @@ where
     }
 }
 
-pub struct ApiClient {}
+pub struct ApiClient(pub Machine);
 
 #[async_trait]
 impl<S> FromRequestParts<S> for ApiClient
@@ -57,8 +59,16 @@ where
             parts.extract::<TypedHeader<Authorization<Bearer>>>().await
         {
             let token = bearer.token();
-            if token == s.api_token {
-                return Ok(Self {});
+            let (mid, key) = token.split_once(':').ok_or((
+                StatusCode::UNAUTHORIZED,
+                Json(json!({"msg": "Invalid API token format"})),
+            ))?;
+            if let Ok(Some(machine)) =
+                QueryCore::find_machine_by_id(&s.conn, mid.parse::<i32>().unwrap_or(0)).await
+            {
+                if machine.key == key {
+                    return Ok(Self(machine));
+                }
             }
         }
         Err((
