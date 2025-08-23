@@ -33,20 +33,20 @@ jobs:
         run: |
           mkdir -p ./build/release
           cross build --target ${{ matrix.target }} --release
-          cp ./target/${{ matrix.target }}/release/bim-server ./build/release/bim-server-${{ matrix.target }}
+          cp ./target/${{ matrix.target }}/release/bim-server ./build/release/bim-server
 
       - name: UPX
         uses: crazy-max/ghaction-upx@v2
         with:
           version: latest
-          files: ./build/release/bim-server-${{ matrix.target }}
+          files: ./build/release/bim-server
           args: --best --lzma
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: bim-${{ matrix.target }}
-          path: build/release/bim-server-${{ matrix.target }}
+          path: build/release/bim-server
 
   build-windows:
     runs-on: windows-latest
@@ -88,10 +88,10 @@ jobs:
         run: |
           cargo build --release
           mkdir -p ./build/release
-          cp ./target/release/bim-server ./build/release/bim-server-macos
+          cp ./target/release/bim-server ./build/release/bim-server
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: bim-server-macos
-          path: build/release/bim-server-macos
+          path: build/release/bim-server
