@@ -67,9 +67,10 @@ pub async fn create_machine_admin(
         res = json!({"msg": "already exists"});
     } else {
         match MutationCore::create_machine(&state.conn, &machine_create).await {
-            Ok(_) => {
+            Ok(m) => {
+                let mid = m.id.as_ref();
                 status = StatusCode::CREATED;
-                res = json!({"msg": "success"});
+                res = json!({"msg": mid});
             }
             Err(_) => {}
         }
