@@ -45,7 +45,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: bim-${{ matrix.target }}
+          name: bim-server-${{ matrix.target }}
           path: build/release/bim-server
 
   build-windows:

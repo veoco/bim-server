@@ -55,7 +55,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: bim-${{ matrix.target }}
+          name: bim-server-${{ matrix.target }}
           path: build/release/*
 
   build-windows:
@@ -77,7 +77,7 @@ jobs:
           powershell -command "Compress-Archive -Path bim-server.exe -DestinationPath bim-server-windows.zip"
       - uses: actions/upload-artifact@v4
         with:
-          name: bim-windows
+          name: bim-server-windows
           path: build/release/*
 
   build-macos:
@@ -100,7 +100,7 @@ jobs:
           mv bim-server bim-server-macos
       - uses: actions/upload-artifact@v4
         with:
-          name: bim-macos
+          name: bim-server-macos
           path: build/release/*
 
   release:
